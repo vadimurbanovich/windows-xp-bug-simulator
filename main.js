@@ -1,6 +1,9 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const ERROR_WINDOW_WIDTH = 300;
+  const ERROR_WINDOW_HEIGHT = 125;
+
   const clock = document.querySelector(".clock");
   const startButton = document.querySelector(".start-button");
   const errorWindow = document.querySelector(".error-window");
@@ -9,14 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const sound = new Audio("public/error-sound.mp3");
 
-  let counter = 0;
+  let windowCounter = 0;
   let cursorCounter = 0;
-  
+
   let isBuggedWindowEffectActive = false;
   let isBuggedCursorEffectActive = false;
 
   const getErrorWindowTemplate = () => {
-    `<div class="error-window__header">
+    return `<div class="error-window__header">
         <div class="error-window__wrapper">
           <div class="error-window__corner"></div>
           <div class="error-window__title">Fatal Error</div>
@@ -32,7 +35,19 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <button class="error-window__confirm-button">OK</button>
       </div>`;
-  }
+  };
+
+  const makeBuggedWindowEffect = () => {
+    if (windowCounter >= 3) {
+      isBuggedWindowEffectActive = true;
+    }
+  };
+
+  const makeBuggedCursorEffect = () => {
+    if (cursorCounter >= 3) {
+      isBuggedCursorEffectActive = true;
+    }
+  };
 
   const getRandomNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -40,32 +55,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const playSound = () => {
     sound.currentTime = 0;
-    sound.play(); 
-  }
+    sound.play();
+  };
 
   const getRandomCoords = () => {
     const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight; 
-
-    const ERROR_WINDOW_WIDTH = 300;
-    const ERROR_WINDOW_HEIGTH = 120;
+    const windowHeight = window.innerHeight;
 
     return {
       x: getRandomNumber(ERROR_WINDOW_WIDTH, windowWidth),
-      y: getRandomNumber(ERROR_WINDOW_HEIGTH, windowHeight),
+      y: getRandomNumber(ERROR_WINDOW_HEIGHT, windowHeight),
     };
   };
 
   const getCurrentTime = (element) => {
-    const currentDate = new Date();
+    const updateTime = () => {
+      const currentDate = new Date();
 
-    const hours = String(currentDate.getHours()).padStart(2, "0");
-    const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+      const hours = String(currentDate.getHours()).padStart(2, "0");
+      const minutes = String(currentDate.getMinutes()).padStart(2, "0");
 
-    element.textContent = `${hours}:${minutes}`;
+      element.textContent = `${hours}:${minutes}`;
+    };
 
-    setTimeout(() => {
-      getCurrentTime(element);
+    updateTime();
+    setInterval(() => {
+      updateTime
     }, 1000);
   };
 
@@ -73,6 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
     playSound();
     errorWindow.classList.remove("hidden");
   });
+
+  const handleWindowInteraction = (counterType) => {
+    if (counterType === "window") windowCounter++;
+    if (counterType === "cursor") cursorCounter++;
+
+    playSound();
+    makeNewErrorWindow();
+
+    if (counterType === "window") makeBuggedWindowEffect();
+    if (counterType === "cursor") makeBuggedCursorEffect();
+  };
 
   const makeNewErrorWindow = () => {
     const { x, y } = getRandomCoords();
@@ -89,73 +115,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const newConfirmButton = newErrorWindow.querySelector(
       ".error-window__confirm-button"
     );
-    newConfirmButton.addEventListener("click", () => {
-      counter++;
-      playSound();
-      makeNewErrorWindow();
-      makeBuggedWindowEffect();
-    });
+    newConfirmButton.addEventListener("click", () =>
+      handleWindowInteraction("window")
+    );
 
     const newCloseButton = newErrorWindow.querySelector(
       ".error-window__close-button"
     );
-    newCloseButton.addEventListener("click", () => {
-      cursorCounter++;
-      playSound();
-      makeNewErrorWindow();
-      makeBuggedCursorEffect();
-    });
+    newCloseButton.addEventListener("click", () =>
+      handleWindowInteraction("cursor")
+    );
   };
 
-  const makeBuggedWindowEffect = () => {
-    if (counter >= 3) {
-      document.addEventListener("mouseover", (event) => {
-        const xCoord = event.clientX;
-        const yCoord = event.clientY;
-        const newErrorWindow = document.createElement("div");
-
-        newErrorWindow.classList.add("error-window");
-        newErrorWindow.innerHTML = getErrorWindowTemplate();
-      
-        newErrorWindow.style.left = `${xCoord}px`;
-        newErrorWindow.style.top = `${yCoord}px`;
-        newErrorWindow.style.transform = "";
-
-        document.body.appendChild(newErrorWindow);
-      });
+  document.addEventListener("mouseover", (event) => {
+    if (isBuggedWindowEffectActive) {
+      createElementAt(
+        "div",
+        "error-window",
+        getErrorWindowTemplate(),
+        event.clientX,
+        event.clientY
+      );
     }
-  };
-
-  const makeBuggedCursorEffect = () => {
-    if (cursorCounter >= 3) {
-      document.addEventListener("mouseover", (event) => {
-        const xCoord = event.clientX;
-        const yCoord = event.clientY;
-        const newCursorBugDiv = document.createElement("div");
-
-        newCursorBugDiv.classList.add("cursor");
-
-        newCursorBugDiv.style.left = `${xCoord}px`;
-        newCursorBugDiv.style.top = `${yCoord}px`;
-
-        document.body.appendChild(newCursorBugDiv);
-      });
+    if (isBuggedCursorEffectActive) {
+      createElementAt("div", "cursor", event.clientX, event.clientY);
     }
-  };
-
-  confirmButton.addEventListener("click", () => {
-    counter++;
-    playSound();
-    makeNewErrorWindow();
-    makeBuggedWindowEffect();
   });
 
-  closeButton.addEventListener("click", () => {
-    cursorCounter++;
-    playSound();
-    makeNewErrorWindow();
-    makeBuggedCursorEffect();
-  });
+  const createElementAt = (tag, className, innerHTML = "", x, y) => {
+    const newElement = document.createElement(tag);
+
+    newElement.classList.add(className);
+    newElement.innerHTML = innerHTML;
+
+    newElement.style.left = `${x}px`;
+    newElement.style.top = `${y}px`;
+    newElement.style.transform = "";
+
+    document.body.appendChild(newElement);
+  };
+
+  confirmButton.addEventListener("click", () =>
+    handleWindowInteraction("window")
+  );
+
+  closeButton.addEventListener("click", () =>
+    handleWindowInteraction("cursor")
+  );
 
   getCurrentTime(clock);
 });
