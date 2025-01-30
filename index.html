@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows XP</title>
+
+    <link rel="shortcut icon" href="public/favicon.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page">
+  <div class="error-window hidden">
+    <div class="error-window__header">
+      <div class="error-window__wrapper">
+        <div class="error-window__corner"></div>
+        <div class="error-window__title">Fatal Error</div>
+      </div>
+      <div class="error-window__close-button"></div>
+    </div>
+    <div class="error-window__body">
+      <div class="error-window__content">
+         <img src="public/error-icon.png" alt="error-windows" class="error-window__icon"></img>
+        <div class="error-window__text">System process “svchost.exe” has unexpectedly stopped. Your system is unstable and must be restarted.</div>
+      </div>
+
+      <button class="error-window__confirm-button">ok</button>
+    </div>
+  </div>
+  <div class="recycle-bin">
+    <img src="public/recycle_bin.png" alt="recycle-bin" class="recycle-bin__image">
+    <div class="recycle-bin__name">Recycle Bin</div>
+  </div>
+  <div class="menu">
+    <div class="start-button"></div>
+    
+    <div class="tray">
+      <div class="tray-arrow"></div>
+
+      <div class="tray-clock">
+        <div class='clock'></div>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
