@@ -103,7 +103,6 @@
   flex-direction: column;
 
   max-width: 300px;
-
 }
 
 .error-window__header {
@@ -163,7 +162,7 @@
 .error-window__content {
   display: flex;
 
-  align-items: center
+  align-items: center;
 }
 
 .error-window__text {
@@ -184,11 +183,11 @@
 
 .cursor {
   position: absolute;
-  
+
   width: 12px;
   height: 22px;
 
-  background-image: url('public/cursor.png');
+  background-image: url("public/cursor.png");
 }
 
 .hidden {

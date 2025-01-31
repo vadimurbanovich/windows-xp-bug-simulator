@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `<div class="error-window__header">
         <div class="error-window__wrapper">
           <div class="error-window__corner"></div>
-          <div class="error-window__title">Fatal Error</div>
+          <div class="error-window__title">Critical System Alert</div>
         </div>
         <div class="error-window__close-button"></div>
       </div>
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="error-window__content">
           <img src="public/error-icon.png" alt="error-windows" class="error-window__icon" />
           <div class="error-window__text">
-            System process “svchost.exe” has unexpectedly stopped. Your system is unstable and must be restarted.
+            Oh man, you’ve got real problems right now. Good luck fixing this one!
           </div>
         </div>
         <button class="error-window__confirm-button">OK</button>
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateTime();
     setInterval(() => {
-      updateTime
+      updateTime;
     }, 1000);
   };
 
