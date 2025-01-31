@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
     if (isBuggedCursorEffectActive) {
-      createElementAt("div", "cursor", event.clientX, event.clientY);
+      createElementAt('div', 'cursor', '',event.clientX, event.clientY);
     }
   });
 
